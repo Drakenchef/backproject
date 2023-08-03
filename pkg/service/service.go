@@ -5,6 +5,8 @@ import (
 	"github.com/drakenchef/backproject/pkg/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Authorizarion interface {
 	CreateUser(user backproject.User) (int, error)
 	GenerateToken(username, password string) (string, error)
