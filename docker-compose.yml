@@ -14,16 +14,16 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./configs:/out/configs
-      - .env
+      - ./.env:/out/.env
     restart: always
 
   postgres:
     env_file:
       - .env
-    image: postgres:14
+    image: postgres:15
     container_name: todo-db
     ports:
-      - "5438:5432"
+      - "5436:5432"
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
