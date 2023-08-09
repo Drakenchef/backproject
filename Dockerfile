@@ -1,20 +1,10 @@
-FROM golang:1.20.2-buster
+FROM golang:1.20-alpine AS builder
+WORKDIR /app
+COPY  . .
+RUN go build -o todo-app cmd/main.go
 
-RUN go version
-ENV GOPATH=/
-
-COPY ./ ./
-
-#install psql
-RUN apt-get update
-RUN apt-get -y install postgresql-client
-
-#make wait-for-ppostres.sh executable
-RUN chmod +x wait-for-postgres.sh
-
-
-#build go app
-RUN go mod download
-RUN go build -o backproject-app ./cmd/main.go
-
-CMD ["./backproject-app"]
+FROM alpine as run_stage
+WORKDIR /out
+COPY --from=builder /app/todo-app ./binary
+EXPOSE 8080
+CMD ["./binary"]

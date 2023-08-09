@@ -1,22 +1,32 @@
-version: '3.8'
-
+version: "3.8"
 services:
-  backproject-app:
-    build: ./
-    command: ./wait-for-postgres.sh  db ./backproject-app
-    ports:
-      - 8001:8001
+  backend:
+    env_file:
+      - .env
+    container_name: todo-app
     depends_on:
-      - postgres
-    environment:
-      - DB_PASSWORD=qwerty
+      postgres:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./configs:/out/configs
+    restart: always
 
   postgres:
-    restart: always
-    image: postgres:latest
-    volumes:
-      - ./.database/postgres/data/:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=qwerty
+    env_file:
+      - .env
+    image: postgres:14
+    container_name: todo-db
     ports:
-      - 5436:5432
+      - "5438:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./myschema/000001_init.up.sql:/docker-entrypoint-initdb.d/initdb.sql
+    restart: always
