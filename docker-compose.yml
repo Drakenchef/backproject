@@ -5,7 +5,7 @@ services:
       - .env
     container_name: todo-app
     depends_on:
-      postgres:
+      db:
         condition: service_started
     ports:
       - "8080:8080"
@@ -17,7 +17,7 @@ services:
       - ./.env:/out/.env
     restart: always
 
-  postgres:
+  db:
     env_file:
       - .env
     image: postgres:15
@@ -25,9 +25,9 @@ services:
     ports:
       - "5436:5432"
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+       POSTGRES_DB: ${DB_NAME}
+       POSTGRES_USER: ${DB_USER}
+       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./myschema/000001_init.up.sql:/docker-entrypoint-initdb.d/initdb.sql
     restart: always
