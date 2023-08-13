@@ -31,3 +31,4 @@ services:
     volumes:
       - ./myschema/000001_init.up.sql:/docker-entrypoint-initdb.d/initdb.sql
     restart: always
+
